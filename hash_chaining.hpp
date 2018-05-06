@@ -17,7 +17,7 @@ struct HashElement
 
 struct HashChainingTable
 {
-    std::array< std::list< HashElement > , 100 > bucket;
+    std::array<std::list<HashElement>, 100> bucket;
 };
 
 int hash(HashChainingTable &table, char key)
@@ -69,13 +69,15 @@ int &at(HashChainingTable &table, char key)
     exit(1);
 }
 
-void insert(HashChainingTable &table, char key)
+void insert(HashChainingTable &table, char key, int value)
 {
-    HashElement newElement{key, 0};
-
-    int index = hash(table, key);
-    std::list<HashElement> &slot = table.bucket[index];
-    slot.push_back(newElement);
+    if (!find(table, key))
+    {
+        HashElement newElement{key, value};
+        int index = hash(table, key);
+        std::list<HashElement> &slot = table.bucket[index];
+        slot.push_back(newElement);
+    }
 }
 
 void remove(HashChainingTable &table, char key)
@@ -91,20 +93,20 @@ int &value(HashChainingTable &table, char key)
 {
     if (!find(table, key))
     {
-        insert(table, key);
+        insert(table, key , 0 );
     }
     return at(table, key);
 }
 
 void clear(HashChainingTable &table)
 {
-    for (auto &slot : table.bucket )
+    for (auto &slot : table.bucket)
         slot.clear();
 }
 
 void printAll(HashChainingTable &table)
 {
-    for (auto &slot : table.bucket )
+    for (auto &slot : table.bucket)
         for (auto &element : slot)
             std::cout << element.key << ":" << element.value << std::endl;
 }
